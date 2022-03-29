@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+TariffManagerEngine/bin/
+TariffManagerEngine/obj/
+TariffManagerLib/obj/
+TariffManagerLib/bin/
+.vs/
