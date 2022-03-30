@@ -13,42 +13,42 @@ namespace TariffManagerLib.Model
     [JsonConverter(typeof(StringEnumConverter))]
     public enum Season
     {
-        [EnumMember(Value = "קיץ​​")]
+       // [EnumMember(Value = "קיץ​​")]
         Summer,
-        [EnumMember(Value = "חורף​")]
+       // [EnumMember(Value = "חורף​")]
         Winter,
-        [EnumMember(Value = "סתיו")]
+        //[EnumMember(Value = "סתיו")]
         Autumn,
-        [EnumMember(Value = "אביב")]
+        //[EnumMember(Value = "אביב")]
         Spring
     }
     [Serializable]
     [JsonConverter(typeof(StringEnumConverter))]
     public enum MonthName
     {
-        [EnumMember(Value = "​ינואר")]
+        //[EnumMember(Value = "​ינואר")]
         January=1,
-        [EnumMember(Value = "​פברואר")]
+        //[EnumMember(Value = "​פברואר")]
         February=2,
-        [EnumMember(Value = "מארס")]
+        //[EnumMember(Value = "מארס")]
         March=3,
-        [EnumMember(Value = "אפריל")]
+        //[EnumMember(Value = "אפריל")]
         April=4,
-        [EnumMember(Value = "מאי")]
+        //[EnumMember(Value = "מאי")]
         May=5,
-        [EnumMember(Value = "יוני")]
+        //[EnumMember(Value = "יוני")]
         June=6,
-        [EnumMember(Value = "יולי")]
+        //[EnumMember(Value = "יולי")]
         July=7,
-        [EnumMember(Value = "אוגוסט")]
+        //[EnumMember(Value = "אוגוסט")]
         August=8,
-        [EnumMember(Value = "ספטמבר")]
+        //[EnumMember(Value = "ספטמבר")]
         September=9,
-        [EnumMember(Value = "אקטובר")]
+        //[EnumMember(Value = "אקטובר")]
         October=10,
-        [EnumMember(Value = "נובמבר")]
+        //[EnumMember(Value = "נובמבר")]
         November=11,
-        [EnumMember(Value = "דצמבר")]
+        //[EnumMember(Value = "דצמבר")]
         December=12
     }
     [Serializable]
@@ -56,11 +56,11 @@ namespace TariffManagerLib.Model
     public enum TariffLevel
     {
         [EnumMember(Value = "פסגה")]
-        Top,
-        [EnumMember(Value = "גבע")]
+        Summit,
+        //[EnumMember(Value = "גבע")]
         Geva,
-        [EnumMember(Value = "שפל")]
-        Low
+        //[EnumMember(Value = "שפל")]
+        Depression
     }
      
 
@@ -77,21 +77,21 @@ namespace TariffManagerLib.Model
     [JsonConverter(typeof(StringEnumConverter))]
     public enum CommandName
     {
-        [EnumMember(Value = "​העונה")]
+        [EnumMember(Value = "​This season")]
         SeasonCommand,
-        [EnumMember(Value = "​החודשים")]
+        [EnumMember(Value = "​The months")]
         MonthPeriodCommand,
-        [EnumMember(Value = "מקבצי השעות")]
+        [EnumMember(Value = "From the time files")]
         TariffLevelComand,
-        [EnumMember(Value = "​שעות הצריכה בימים א'-ה'")]
+        [EnumMember(Value = "Consumption hours on Sundays-Thursdays")]
         TimeInfoWorkingDayCommand,
-        [EnumMember(Value = "שעות הצריכה בימי ו' ובערבי חג​")]
+        [EnumMember(Value = "Consumption hours on Fridays and on the eve of a holiday​")]
         TimeInfoWeekend1Command,
-        [EnumMember(Value = "שעות הצריכה בשבתות ובחגים")]
+        [EnumMember(Value = "Consumption hours on Saturdays and holidays")]
         TimeInfoWeekend2Command,
-        [EnumMember(Value = "מחיר&nbsp;לקוט\"ש באגורותלא כולל מע\"מ​")]
+        [EnumMember(Value = "Price per kWh in agorot , not including VAT")]
         TariffSmallCommand,
-        [EnumMember(Value = "​מחיר לקוט\"ש באגורותכולל מע\"מ")]
+        [EnumMember(Value = "Price per kWh in agorot including VAT")]
         TariffFullCommand
 
     }
