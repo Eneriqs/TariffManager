@@ -17,7 +17,14 @@ namespace TariffManagerLib.Helpers
         private Helper() { }
         #endregion
         public bool Compare(string item1, string item2) {
-            return  String.Compare(item1, item2, new CultureInfo("he"), CompareOptions.None) == 0;
+            item1 = item1.Replace(((char)8203).ToString(), String.Empty);
+            item2 = item2.Replace(((char)8203).ToString(), String.Empty);
+
+            if (item1.Length != item2.Length)
+            {
+                return false;
+            }
+            return item1.Equals(item2);            
         }
         public static Helper Instance
         {
