@@ -14,7 +14,7 @@ namespace TariffManagerLib
     {
         #region Members
         private static CommandProcessor _instance;
-        private Dictionary<CommandName, AbstractParserHandler> _registeredCommands;
+        private Dictionary<dynamic, AbstractParserHandler> _registeredCommands;
         private static readonly object _lock = new object();
         private static Serilog.ILogger Log => Serilog.Log.ForContext<CommandProcessor>();
         #endregion
@@ -22,9 +22,9 @@ namespace TariffManagerLib
 
         private CommandProcessor()
         {
-            _registeredCommands = new Dictionary<CommandName,AbstractParserHandler>();
-            InitCommandProcessor();
+            Init();           
         }
+
         public static CommandProcessor Instance
         {
             get {
@@ -43,7 +43,18 @@ namespace TariffManagerLib
         }
         #endregion
         #region Private Methods
-        private void InitCommandProcessor()
+        private void Init() 
+        {
+            _registeredCommands = new Dictionary<dynamic, AbstractParserHandler>();
+            if (Helper.Instance.IsExcelStarted())
+            {
+                InitCommandFromExel();
+            }
+            else {
+                InitCommandFromURL();
+            }
+        }
+        private void InitCommandFromURL()
         {
             RegisterCommandHandlerServer(CommandName.SeasonCommand, new SeasonHandler());
             RegisterCommandHandlerServer(CommandName.MonthPeriodCommand, new MonthPeriodHandler());
@@ -55,7 +66,17 @@ namespace TariffManagerLib
             RegisterCommandHandlerServer(CommandName.TariffFullCommand, new TariffFullHandler());
         }
 
-        private void RegisterCommandHandlerServer(CommandName commandName, AbstractParserHandler handler)
+        private void InitCommandFromExel()
+        {
+            RegisterCommandHandlerServer(Command.Season, new SeasonHandler());
+            RegisterCommandHandlerServer(Command.Month, new MonthHandler());
+            RegisterCommandHandlerServer(Command.TariffLevel, new TariffLevelHandler());
+            RegisterCommandHandlerServer(Command.TimeInfo, new TimeInfoHandler());
+            RegisterCommandHandlerServer(Command.TariffSmall, new TariffSmallHandler());
+            RegisterCommandHandlerServer(Command.TariffFull, new TariffFullHandler());
+            RegisterCommandHandlerServer(Command.StartDate, new StartDateHandler());
+        }
+        private void RegisterCommandHandlerServer(dynamic commandName, AbstractParserHandler handler)
         {
             _registeredCommands.Add(commandName, handler);
         }
@@ -70,6 +91,17 @@ namespace TariffManagerLib
                 Log.Here().Error($"Command {command} is not exits");
             }
             handler.Parse(data, tariffInfo);
+        }
+
+        public dynamic Parse(Command command, string data)
+        {
+            _registeredCommands.TryGetValue(command, out AbstractParserHandler handler);
+            if (handler == null)
+            {
+                Log.Here().Error($"Command {command} is not exits");
+            }
+            handler.Parse(data);
+            return handler.Result;
         }
         #endregion
 

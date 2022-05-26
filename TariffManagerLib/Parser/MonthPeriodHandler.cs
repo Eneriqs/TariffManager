@@ -48,6 +48,11 @@ namespace TariffManagerLib.Parser
             Log.Here().Information($"Month parse successful");
         }
 
+        public override void Parse(string data)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

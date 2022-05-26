@@ -14,16 +14,16 @@ namespace TariffManagerLib.Services
     {
 
         #region Members
-        private DateTime _dateFromURL;
+        private DateTime _startDate;
         private DateTime? _dateFromCongigFile;
         private const string LastEffectFromDateConfigName = "LastActualDate";
         private static Serilog.ILogger Log => Serilog.Log.ForContext<ActualDateManager>();
         #endregion
 
         #region Constructors
-        public ActualDateManager(DateTime dateFromUrl)
+        public ActualDateManager(DateTime startDate)
         {
-            _dateFromURL = dateFromUrl;            
+            _startDate = startDate;            
         }
 
         #endregion
@@ -45,7 +45,7 @@ namespace TariffManagerLib.Services
         }
         private void SetConfigFile()
         {
-            Helpers.Helper.Instance.AddUpdateAppSettings(LastEffectFromDateConfigName, _dateFromURL.ToString("d.M.yyyy"));
+            Helpers.Helper.Instance.AddUpdateAppSettings(LastEffectFromDateConfigName, _startDate.ToString("d.M.yyyy"));
         }
         #endregion
 
@@ -53,7 +53,7 @@ namespace TariffManagerLib.Services
         public void SaveActualDate()
         {
             Log.Here().Information("Actual date save ");
-            if (_dateFromCongigFile == null || _dateFromCongigFile.Value < _dateFromURL) {
+            if (_dateFromCongigFile == null || _dateFromCongigFile.Value < _startDate) {
                 SetConfigFile();
             }
             Log.Here().Information("Actual date save successful");
@@ -63,7 +63,7 @@ namespace TariffManagerLib.Services
             Log.Here().Information("If need DB Update check");
             bool isNeedUpdate = false;
             _dateFromCongigFile = GetActualDateFromConfigFile();
-            if(_dateFromCongigFile != null && _dateFromCongigFile.Value < _dateFromURL)
+            if(_dateFromCongigFile != null && _dateFromCongigFile.Value < _startDate)
             {
                 isNeedUpdate = true;
             }

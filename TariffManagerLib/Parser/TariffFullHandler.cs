@@ -23,5 +23,20 @@ namespace TariffManagerLib.Parser
                 Log.Here().Information($"Tariff full is not valid");
             }          
         }
+
+        public override void Parse(string data)
+        {
+            Log.Here().Information($"Tariff full parse {data}");
+            data = data.Trim();
+            if (decimal.TryParse(data, out decimal tariff))
+            {
+              Log.Here().Information($"Tariff full parse successful {tariff}");
+                Result = tariff;
+            }
+            else
+            {
+                Log.Here().Information($"Tariff full is not valid");
+            }
+        }
     }
 }

@@ -48,24 +48,42 @@ namespace TariffManagerLib.Services
                      
         }
 
-        public ExcelOutput GetTariffs() {
+        public ExcelOutput GetTariffs()
+        {
             Log.Here().Information("Excel to list convert");
 
             ExcelOutput excelOutput = new ExcelOutput();
-                var range = _worksheet.RangeUsed();
-                for (int i = 0; i < range.RowCount() ; i++)
+            var range = _worksheet.RangeUsed();
+            for (int i = 0; i < range.RowCount(); i++)
+            {
+                for (int j = 0; j < range.ColumnCount(); j++)
                 {
-                    for (int j = 0; j < range.ColumnCount() ; j++)
-                    {
-                    excelOutput.Data.Add(new Tuple<int, int>(i, j), _worksheet.Cell(i+1, j+1).Value);
-                    }
+                    excelOutput.Data.Add(new Tuple<int, int>(i, j), _worksheet.Cell(i + 1, j + 1).Value);
                 }
+            }
             excelOutput.ColumnCount = range.ColumnCount();
             excelOutput.RowCount = range.RowCount();
             Log.Here().Information("Excel to list convert successful");
             return excelOutput;
         }
-            
+        //public ExcelOutput GetTariffs() {
+        //    Log.Here().Information("Excel to list convert");
+
+        //    ExcelOutput excelOutput = new ExcelOutput();
+        //        var range = _worksheet.RangeUsed();
+        //        for (int i = 0; i < range.RowCount() ; i++)
+        //        {
+        //            for (int j = 0; j < range.ColumnCount() ; j++)
+        //            {
+        //            excelOutput.Data.Add(new Tuple<int, int>(i, j), _worksheet.Cell(i+1, j+1).Value);
+        //            }
+        //        }
+        //    excelOutput.ColumnCount = range.ColumnCount();
+        //    excelOutput.RowCount = range.RowCount();
+        //    Log.Here().Information("Excel to list convert successful");
+        //    return excelOutput;
+        //}
+
         public void Dispose()
         {
             _workbook.Dispose();

@@ -11,4 +11,8 @@
     <ProjectReference Include="..\TariffManagerLib\TariffManagerLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="files\" />
+  </ItemGroup>
+
 </Project>

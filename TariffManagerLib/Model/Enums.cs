@@ -30,7 +30,7 @@ namespace TariffManagerLib.Model
         January=1,
         [EnumMember(Value = "​פברואר")]
         February=2,
-        [EnumMember(Value = "מארס")]
+        [EnumMember(Value = "מרץ")]
         March=3,
         [EnumMember(Value = "אפריל")]
         April=4,
@@ -93,6 +93,17 @@ namespace TariffManagerLib.Model
         TariffSmallCommand,
         [EnumMember(Value = "​מחיר לקוט\"ש באגורותכולל מע\"מ")]
         TariffFullCommand
+    }
+   
+    public enum Command
+    {
+        Season,
+        Month,
+        TariffLevel,
+        TimeInfo,
+        TariffSmall,
+        TariffFull,
+        StartDate
 
     }
 }

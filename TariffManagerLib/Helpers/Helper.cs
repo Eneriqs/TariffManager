@@ -84,6 +84,7 @@ namespace TariffManagerLib.Helpers
             Log.Here().Error($"Enum {value} parse problem");
             throw new InvalidOperationException("Not Enum");
         }
+       
 
         public T ParseEnum<T>(string value)
         {
@@ -96,7 +97,10 @@ namespace TariffManagerLib.Helpers
             DateTime dateTime = new DateTime(year, month, DateTime.DaysInMonth(year, month));
             return dateTime;
         }
-
+        public bool IsExcelStarted() {
+            var IsExcelStarted = Helper.Instance.ReadSetting("IsExcelStarted");
+            return (IsExcelStarted == "1");
+        }
         public string ReadSetting(string key)
         {
             try
