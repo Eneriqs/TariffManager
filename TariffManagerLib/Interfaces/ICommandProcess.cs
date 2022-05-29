@@ -10,5 +10,6 @@ namespace TariffManagerLib.Interfaces
     public interface ICommandProcess
     {
         void Parse(string commandName, string data, TariffRow tariffInfo);
+        dynamic Parse(Command commandName, string data);
     }
 }

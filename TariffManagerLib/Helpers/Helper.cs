@@ -17,12 +17,14 @@ namespace TariffManagerLib.Helpers
         private Helper() { }
         #endregion
         public bool Compare(string item1, string item2) {
-            if(item1.Length != item1.Length)
+            item1 = item1.Replace(((char)8203).ToString(), String.Empty);
+            item2 = item2.Replace(((char)8203).ToString(), String.Empty);
+
+            if (item1.Length != item2.Length)
             {
                 return false;
             }
-
-            return String.Compare(item1, item2, new CultureInfo("he"), CompareOptions.IgnoreSymbols) == 0;
+            return item1.Equals(item2);            
         }
         public static Helper Instance
         {
@@ -82,6 +84,7 @@ namespace TariffManagerLib.Helpers
             Log.Here().Error($"Enum {value} parse problem");
             throw new InvalidOperationException("Not Enum");
         }
+       
 
         public T ParseEnum<T>(string value)
         {
@@ -94,7 +97,10 @@ namespace TariffManagerLib.Helpers
             DateTime dateTime = new DateTime(year, month, DateTime.DaysInMonth(year, month));
             return dateTime;
         }
-
+        public bool IsExcelStarted() {
+            var IsExcelStarted = Helper.Instance.ReadSetting("IsExcelStarted");
+            return (IsExcelStarted == "1");
+        }
         public string ReadSetting(string key)
         {
             try

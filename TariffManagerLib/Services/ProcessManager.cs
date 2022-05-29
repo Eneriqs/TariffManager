@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
-using TariffManagerLib.Helpers;
+﻿using TariffManagerLib.Helpers;
 using TariffManagerLib.Interfaces;
 using TariffManagerLib.Model;
 
@@ -10,98 +8,71 @@ namespace TariffManagerLib.Services
     {
         #region
         private static Serilog.ILogger Log => Serilog.Log.ForContext<ProcessManager>();
-        private string _edgePath = "";
-        private string _filePath = "";
-        // private const string _url  = "https://www-iec-co-il.translate.goog/businessclients/pages/highvoltage.aspx?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=ru&_x_tr_pto=wapp";
+        private const string _url = "https://www-iec-co-il.translate.goog/content/tariffs/contentpages/taozb-gavoaa?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=ru&_x_tr_pto=op,wapp";
+        //"https://www-iec-co-il.translate.goog/businessclients/pages/highvoltage.aspx?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=ru&_x_tr_pto=wapp";
+        //;"https://www.iec.co.il/content/tariffs/contentpages/taozb-gavoaa";
+
+        private DateTime? _startDate = null;
         #endregion
 
-        private void Test()
-        {
-            _edgePath = Helper.Instance.ReadSetting("EdgePath");
-            //SaveHTML();
-            // ProcessStart();
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName =_edgePath ,
-                        Arguments = "--headless --disable-gpu --dump-dom  \"https://www-iec-co-il.translate.goog/businessclients/pages/highvoltage.aspx?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=ru&_x_tr_pto=wapp\" ",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        //  CreateNoWindow = true,
-                        // WorkingDirectory =@"C:\\Temp\1"
-                    }
-                };
-
-                process.Start();
-                StringBuilder builder = new StringBuilder();
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    builder.Append(line);
-                }
-
-                process.WaitForExit();
-
-                Thread.Sleep(10000);
-             
-                //this code section write stringbuilder content to physical text file.
-                using (StreamWriter swriter = new StreamWriter(_filePath))
-                {
-                    swriter.Write(builder.ToString());                   
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-
-        public void Process()
-        {
-            Log.Here().Information($"Process start");
-           
+        private Dictionary<SeasonInfo, TariffSeason> CreateTariffsUrl() {
             ExcelOutput excelOutput;
-            DateTime? dateFromURL = null;
-            _filePath = Helper.Instance.ReadSetting("FilePath"); ;
-            string fileFullPath = Path.Combine(Directory.GetCurrentDirectory(),_filePath);
-            Test();
-
+           
             using (IExcelManager excelManager = new ExcelManager())
             {
                 WebScraper webScrupper = new WebScraper(excelManager);
-                string urlPath = fileFullPath.Replace(@"\",@"/");
-                string url = $"file:///{urlPath}";
-                if (!webScrupper.LoadURL(url)) {
-                    return;
+                if (!webScrupper.LoadURL(_url))
+                {
+                    return null;
                 }
-                dateFromURL = webScrupper.ScrapDate();
-                if (dateFromURL == null)
+                _startDate = webScrupper.ScrapDate();
+                if (_startDate == null)
                 {
                     Log.Here().Error("Date scrap problem");
-                    return;
+                    return null;
                 }
                 excelOutput = webScrupper.ScrapTable();
-                if (excelOutput == null) {
+                if (excelOutput == null)
+                {
                     Log.Here().Error("Table scrap problem");
-                    return;
+                    return null;
                 }
             }
 
             IDataConvertor dataConvertor = new DataConvertor();
-            dataConvertor.Parser(excelOutput);              
-            
-            Dictionary<SeasonInfo, TariffSeason>  tariffTable = dataConvertor.GetTariffBySeasons();                       
-            IActualDateManager dateEffectStarted = new ActualDateManager(dateFromURL.Value);
+            dataConvertor.Parser(excelOutput);
+
+           return dataConvertor.GetTariffBySeasons();
+
+        }
+
+        private Dictionary<SeasonInfo, TariffSeason> CreateTariffsExcel()
+        {
+            Dictionary<SeasonInfo, TariffSeason> tariffs = null;
+            using (ExcelReaderManager excelReader = new ExcelReaderManager())
+            {
+                excelReader.ReadExelReader();
+                _startDate = excelReader.GetStartDate();
+                if (_startDate == null)
+                {
+                    Log.Here().Error("Date scrap problem");
+                    return null;
+                }
+                tariffs = excelReader.GetTariffs();
+            }
+            return tariffs;
+        }
+
+        public void Process()
+        {
+            Log.Here().Information($"Process start");
+            var tariffTable = Helper.Instance.IsExcelStarted() ? CreateTariffsExcel() : CreateTariffsUrl();
+            IActualDateManager dateEffectStarted = new ActualDateManager(_startDate.Value);
             IDBService dBService = new DBService();
 
             if (dateEffectStarted.CheckIfNeedDBUpdate())
             {
-                if (!dBService.TariffClose(dateFromURL.Value))
+                if (!dBService.TariffClose(_startDate.Value))
                 {
                     return;
                 }

@@ -10,9 +10,13 @@ namespace TariffManagerLib.Parser
     public abstract class AbstractParserHandler        
     {
         #region Members
+        public dynamic Result { get; set; } = null;
+
         public string CommandHeader { get; set; }
         protected static Serilog.ILogger Log => Serilog.Log.ForContext<AbstractParserHandler>();
         #endregion 
         public abstract void Parse(string data, TariffRow tariffInfo);
+
+        public abstract void Parse(string data);
     }
 }

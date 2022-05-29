@@ -24,5 +24,18 @@ namespace TariffManagerLib.Parser
             tariffInfo.Seasons = seasons;
             Log.Here().Information($"Season parse successful");
         }
+
+        public override void Parse(string data)
+        {
+            Log.Here().Information($"Season parse {data}");
+            data = data.Trim();
+
+            if (string.IsNullOrEmpty(data))
+            {
+                Log.Here().Error($"Season parse problem");
+            }
+            Result = Helper.Instance.GetValueFromEnumMember<Season>(data);
+            Log.Here().Information($"Parse successful {Result}");
+        }
     }
 }

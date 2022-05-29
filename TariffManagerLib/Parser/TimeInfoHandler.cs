@@ -18,6 +18,7 @@ namespace TariffManagerLib.Parser
         {
             _dayType = dayType;
         }
+        public TimeInfoHandler()  { }
         public override void Parse(string data, TariffRow tariffInfo)
         {
             Log.Here().Information($"Time information parse {data}");
@@ -47,6 +48,22 @@ namespace TariffManagerLib.Parser
             }
             Log.Here().Information($"Time information parse successful");
 
+        }
+
+        public override void Parse(string data)
+        {
+            Log.Here().Information($"Time parse {data}");
+            data = data.Trim();
+            DateTime time;
+            if (DateTime.TryParse(data, out time))
+            {
+                Log.Here().Information($"The Time is valid: {time} ");
+                Result = DateTime.MinValue.AddHours(time.Hour);
+            }
+            else
+            {
+                Log.Here().Error($"Unable to parse the time {data}");
+            }
         }
     }
 }
