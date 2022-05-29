@@ -62,6 +62,7 @@ namespace TariffManagerLib.Services
         }
 
        
+
         private List<TariffPeriodInfo> GetDataByDayType(Worksheet worksheet, int columnFrom, int columnTo, DayType dayType, SeasonInfo session) {
             
             List<TariffPeriodInfo> tariffs = new List<TariffPeriodInfo>();
@@ -85,7 +86,8 @@ namespace TariffManagerLib.Services
                     Start = CommandProcessor.Instance.Parse(Command.TimeInfo, timeFrom),
                     End = CommandProcessor.Instance.Parse(Command.TimeInfo, timeTo)
                 };
-                tariffs.Add(tariffPeriodInfo);
+               
+                tariffs.Add(tariffPeriodInfo);               
             }
             return tariffs;
         }
@@ -94,10 +96,20 @@ namespace TariffManagerLib.Services
             Dictionary<DayType, List<TariffPeriodInfo>> keyValuePairs = new Dictionary<DayType,List<TariffPeriodInfo>>();
             List<TariffPeriodInfo> tariffs = GetDataByDayType(worksheet, 6, 7, DayType.WorkingDay, season);
             keyValuePairs.Add(DayType.WorkingDay, tariffs);
+            
             tariffs = GetDataByDayType(worksheet, 8, 9, DayType.Weekend1, season);
             keyValuePairs.Add(DayType.Weekend1, tariffs);
+
+            tariffs = GetDataByDayType(worksheet, 8, 9, DayType.SpecialDay, season);
+            keyValuePairs.Add(DayType.SpecialDay, tariffs);
+
             tariffs = GetDataByDayType(worksheet, 10, 11, DayType.Weekend2, season);
             keyValuePairs.Add(DayType.Weekend2, tariffs);
+
+            tariffs = GetDataByDayType(worksheet, 10, 11, DayType.Holiday, season);
+            keyValuePairs.Add(DayType.Holiday, tariffs);
+
+
             return keyValuePairs;
         }
         #endregion

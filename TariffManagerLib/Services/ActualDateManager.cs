@@ -63,7 +63,7 @@ namespace TariffManagerLib.Services
             Log.Here().Information("If need DB Update check");
             bool isNeedUpdate = false;
             _dateFromCongigFile = GetActualDateFromConfigFile();
-            if(_dateFromCongigFile != null && _dateFromCongigFile.Value < _startDate)
+            if(_dateFromCongigFile == null || _dateFromCongigFile.Value < _startDate)
             {
                 isNeedUpdate = true;
             }
