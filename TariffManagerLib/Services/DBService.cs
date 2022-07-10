@@ -122,7 +122,7 @@ namespace TariffManagerLib.Services
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("select  DISTINCT TouDate FROM tTimeOfUse WHERE TouDate >= getDate()", connection))
+                using (SqlCommand command = new SqlCommand("select  DISTINCT TouDate FROM tTimeOfUse WHERE TouDate >=  DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()))", connection))
                 {
                     command.CommandType = CommandType.Text;
                     try
