@@ -15,17 +15,7 @@ namespace TariffManagerLib.Helpers
         #region Constructor & Instance
         
         private Helper() { }
-        #endregion
-        public bool Compare(string item1, string item2) {
-            item1 = item1.Replace(((char)8203).ToString(), String.Empty);
-            item2 = item2.Replace(((char)8203).ToString(), String.Empty);
 
-            if (item1.Length != item2.Length)
-            {
-                return false;
-            }
-            return item1.Equals(item2);            
-        }
         public static Helper Instance
         {
             get
@@ -43,6 +33,20 @@ namespace TariffManagerLib.Helpers
                 return _instance;
             }
         }
+        #endregion
+
+        #region Public Methods
+        public bool Compare(string item1, string item2) {
+            item1 = item1.Replace(((char)8203).ToString(), String.Empty);
+            item2 = item2.Replace(((char)8203).ToString(), String.Empty);
+
+            if (item1.Length != item2.Length)
+            {
+                return false;
+            }
+            return item1.Equals(item2);            
+        }
+       
 
 
         /// <summary>
@@ -147,5 +151,6 @@ namespace TariffManagerLib.Helpers
                 Log.Here().Error($"Save configuration {key} problem", ex);
             }
         }
+        #endregion
     }
 }
