@@ -15,4 +15,10 @@
     <Folder Include="files\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="files\iec.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
